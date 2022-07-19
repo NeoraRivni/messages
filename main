@@ -1,14 +1,16 @@
 import multiprocessing
 import queue
+import time
 
-class Neora:
+class DigestingMessages:
 
     def __init__(self, messages=queue.Queue()):
         self.messages = messages
-        self.__executed()
+        if self.messages.empty() == False:
+            self.__executed()
 
     def __task(self):
-        print(self.messages.get())
+        print("The following message has been executed " + self.messages.get())
 
     def __executed(self):
         for i in range(10):
@@ -17,9 +19,9 @@ class Neora:
                 p.start()
 
 
-    def add_to_queue(self, message):
-        for mes in message.queue:
-            self.messages.put(mes)
+    def add_to_queue(self, messages=queue.Queue()):
+        for item in messages.queue:
+            self.messages.put(item)
         self.__executed()
 
 
@@ -28,7 +30,11 @@ if __name__ == '__main__':
         queue.put('b')
         queue.put('b')
         queue.put('b')
-        c = Neora(queue)
-
-
+        c = DigestingMessages()
+        time.sleep(5)
+       #queue.put('a')
+        #queue.put('a')
+        #queue.put('a')
         c.add_to_queue(queue)
+
+
