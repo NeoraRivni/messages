@@ -4,8 +4,8 @@ import time
 
 class DigestingMessages:
     messages = queue.Queue()
-    for i in range(15):
-        messages.put("message number " + str(i))
+#    for i in range(15):
+ #       messages.put("message number " + str(i))
 
     def __init__(self):
         if self.messages.empty() == False:
