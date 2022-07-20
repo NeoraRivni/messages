@@ -2,13 +2,14 @@ import multiprocessing
 import queue
 import time
 
+
+
 class DigestingMessages:
     # class that digests arriving messages
 
-    messages = queue.Queue()
-    
-
     def __init__(self):
+        self.messages = queue.Queue()
+        self.processes=0
         if self.messages.empty() == False:
             self.__executed()
 
@@ -16,11 +17,14 @@ class DigestingMessages:
     def __executed(self):
     # A function that takes up to 10 messages from the queue (as long as it is not empty) and executes them in multiprocessing
         while not self.messages.empty():
-            for i in range(10):
+            if self.processes<10:
+                self.processes=min(self.messages.qsize()+self.processes, 10)
+            while self.processes<10:
                 if self.messages.empty():
                     break
                 p = multiprocessing.Process(target=self.__task())
                 p.start()
+                self.processes=self.processes-1
 
 
     def __task(self):
