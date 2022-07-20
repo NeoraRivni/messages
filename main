@@ -3,38 +3,40 @@ import queue
 import time
 
 class DigestingMessages:
+    messages = queue.Queue()
+    for i in range(15):
+        messages.put("message number " + str(i))
 
-    def __init__(self, messages=queue.Queue()):
-        self.messages = messages
+    def __init__(self):
         if self.messages.empty() == False:
             self.__executed()
 
-    def __task(self):
-        print("The following message has been executed " + self.messages.get())
 
     def __executed(self):
-        for i in range(10):
-            if self.messages.empty() == False:
+        running_proc=[]
+        while not self.messages.empty():
+            ###if len(running_proc)<10:
+            for i in range(10):
                 p = multiprocessing.Process(target=self.__task())
                 p.start()
+                running_proc.append(p)
 
 
-    def add_to_queue(self, messages=queue.Queue()):
-        for item in messages.queue:
-            self.messages.put(item)
+    def __task(self):
+        if self.messages.empty() == False:
+            print("The following message has been executed: " + self.messages.get())
+
+    def add_to_queue(self, message):
+        self.messages.put(message)
         self.__executed()
 
 
 if __name__ == '__main__':
-        queue = queue.Queue()
-        queue.put('b')
-        queue.put('b')
-        queue.put('b')
+
         c = DigestingMessages()
+
+        for i in range(1, 15):
+                c.add_to_queue("message number "+ str(i))
         time.sleep(5)
-       #queue.put('a')
-        #queue.put('a')
-        #queue.put('a')
-        c.add_to_queue(queue)
-
-
+        for i in range(16, 20):
+                c.add_to_queue("message number "+ str(i))
